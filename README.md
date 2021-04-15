@@ -16,20 +16,35 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/configuring-tls-
 
 3. rename .env.example to .env 
 
-3. Execute the init-letsencrypt.sh script to generate LetsEncrypt certificates for nginx.
+4. Execute the init-letsencrypt.sh script to generate LetsEncrypt certificates for nginx.
     ```
     chmod +x init-letencrypt.sh
     sudo ./init-letsencrypt.sh
     ```
-4. Run the *elasticsearch-generate-passwords* tool on es01 to generate passwords for all built-in users and kibana_system. Make note of these passwords.
+5. (Optional) In case there is an error starting the stack:
+    a. Run : 
+    ```
+    sysctl -w vm.max_map_count=262144
+    ```
+    b. To make the changes permanent insert the new entry into the /etc/sysctl.conf file with the required parameter:
+    ```
+    vm.max_map_count = 262144
+
+    ```
+    c. To take effect restart docker :
+    ```
+    sudo systemctl restart docker
+    ```
+
+6. Run the *elasticsearch-generate-passwords* tool on es01 to generate passwords for all built-in users and kibana_system. Make note of these passwords.
     ```
     docker exec es01 /bin/bash -c "bin/elasticsearch-setup-passwords auto --batch --url https://es01:9200"
     ```
-5. Edit .env file : Replace **ELASTIC_PASSWORD** with the randomly generated password for *kibana_system*. You'll also want to replace **KIBANA_ENCRYPTION_KEY** with a randomly generated (use your own), 32 character alphanumeric value. This is used for encrypting API keys for Elastic Agent fleets.
+7. Edit .env file : Replace **ELASTIC_PASSWORD** with the randomly generated password for *kibana_system*. You'll also want to replace **KIBANA_ENCRYPTION_KEY** with a randomly generated (use your own), 32 character alphanumeric value. This is used for encrypting API keys for Elastic Agent fleets.
 
-6. Restart your stack, and you should have a fully working elastic stack with HTTPS enabled!
+8. Restart your stack, and you should have a fully working elastic stack with HTTPS enabled!
     ```
     docker-compose stop
     docker-compose up -d
     ```
-7. To login to Kibana the username is elastic and your password is the value of elastic (the one generated in step 5)
+9. To login to Kibana the username is elastic and your password is the value of elastic (the one generated in step 6)
