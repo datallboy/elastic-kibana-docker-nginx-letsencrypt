@@ -86,5 +86,3 @@ docker-compose run --rm --entrypoint "\
     --force-renewal" certbot
 echo
 
-echo "### Restarting docker compose ..."
-docker-compose down
