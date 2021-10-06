@@ -18,7 +18,7 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/configuring-tls-
 
 4. Execute the init-letsencrypt.sh script to generate LetsEncrypt certificates for nginx.
     ```
-    chmod +x init-letencrypt.sh
+    chmod +x init-letsencrypt.sh
     sudo ./init-letsencrypt.sh
     ```
 5. (Optional) In case there is an error starting the stack:
