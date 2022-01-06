@@ -9,12 +9,12 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/configuring-tls-
 
 ### Instructions
 
-1. Create TLS certificates for encrypted communications between nodes
+1. Copy .env.example to .env
+
+2. Create TLS certificates for encrypted communications between nodes
     `docker-compose -f create-certs.yml run --rm create_certs`
 
-2. Edit nginx/config.conf and init-letsencrypt.sh and replace **DOMAINNAME.com** with your actual domain.
-
-3. rename .env.example to .env 
+3. Edit nginx/config.conf and init-letsencrypt.sh and replace **DOMAINNAME.com** with your actual domain.
 
 4. Execute the init-letsencrypt.sh script to generate LetsEncrypt certificates for nginx.
     ```
