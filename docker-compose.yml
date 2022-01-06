@@ -9,8 +9,8 @@ services:
       - cluster.name=es-docker-cluster
       - discovery.seed_hosts=es02
       - cluster.initial_master_nodes=es01,es02
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-      - xpack.license.self_generated.type=basic 
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
+      - xpack.license.self_generated.type=basic
       - xpack.security.enabled=true
       - xpack.security.authc.api_key.enabled=true
       - xpack.security.http.ssl.enabled=true
@@ -18,7 +18,7 @@ services:
       - xpack.security.http.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
       - xpack.security.http.ssl.certificate=$CERTS_DIR/es01/es01.crt
       - xpack.security.transport.ssl.enabled=true
-      - xpack.security.transport.ssl.verification_mode=certificate 
+      - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.security.transport.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
       - xpack.security.transport.ssl.certificate=$CERTS_DIR/es01/es01.crt
       - xpack.security.transport.ssl.key=$CERTS_DIR/es01/es01.key
@@ -26,7 +26,7 @@ services:
       nofile:
         soft: 65536
         hard: 65536
-  
+
     volumes:
       - data01:/usr/share/elasticsearch/data
       - certs:$CERTS_DIR
@@ -34,6 +34,7 @@ services:
       - 9200
     networks:
       - elastic
+    restart: always
     healthcheck:
       test: curl --cacert $CERTS_DIR/ca/ca.crt -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
       interval: 30s
@@ -48,7 +49,7 @@ services:
       - cluster.name=es-docker-cluster
       - discovery.seed_hosts=es01
       - cluster.initial_master_nodes=es01,es02
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - 'ES_JAVA_OPTS=-Xms512m -Xmx512m'
       - xpack.license.self_generated.type=basic
       - xpack.security.enabled=true
       - xpack.security.authc.api_key.enabled=true
@@ -57,7 +58,7 @@ services:
       - xpack.security.http.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
       - xpack.security.http.ssl.certificate=$CERTS_DIR/es02/es02.crt
       - xpack.security.transport.ssl.enabled=true
-      - xpack.security.transport.ssl.verification_mode=certificate 
+      - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.security.transport.ssl.certificate_authorities=$CERTS_DIR/ca/ca.crt
       - xpack.security.transport.ssl.certificate=$CERTS_DIR/es02/es02.crt
       - xpack.security.transport.ssl.key=$CERTS_DIR/es02/es02.key
@@ -66,11 +67,12 @@ services:
       - certs:$CERTS_DIR
     networks:
       - elastic
+    restart: always
 
   kib01:
     image: docker.elastic.co/kibana/kibana:${VERSION}
     container_name: kib01
-    depends_on: {"es01": {"condition": "service_healthy"}}
+    depends_on: { 'es01': { 'condition': 'service_healthy' } }
     expose:
       - 5601
     environment:
@@ -79,22 +81,23 @@ services:
       ELASTICSEARCH_HOSTS: https://es01:9200
       ELASTICSEARCH_USERNAME: kibana_system
       ELASTICSEARCH_PASSWORD: $ELASTIC_PASSWORD
-      XPACK_SECURITY_ENABLED: "true"
-      XPACK_INGESTMANAGER_FLEET_TLSCHECKDISABLED: "true"
+      XPACK_SECURITY_ENABLED: 'true'
+      XPACK_INGESTMANAGER_FLEET_TLSCHECKDISABLED: 'true'
       XPACK_ENCRYPTEDSAVEDOBJECTS_ENCRYPTIONKEY: $KIBANA_ENCRYPTION_KEY
       ELASTICSEARCH_SSL_CERTIFICATEAUTHORITIES: $CERTS_DIR/ca/ca.crt
-      SERVER_SSL_ENABLED: "true"
+      SERVER_SSL_ENABLED: 'true'
       SERVER_SSL_KEY: $CERTS_DIR/kib01/kib01.key
       SERVER_SSL_CERTIFICATE: $CERTS_DIR/kib01/kib01.crt
     volumes:
       - certs:$CERTS_DIR
     networks:
       - elastic
+    restart: always
 
   nginx:
     container_name: nginx01
     image: nginx:alpine
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    command: '/bin/sh -c ''while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g "daemon off;"'''
     ports:
       - 80:80
       - 443:443
