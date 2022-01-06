@@ -10,6 +10,10 @@ Docker-compose follows Elastic's official documentation for creating a Elastic S
 https://www.elastic.co/guide/en/elastic-stack-get-started/current/get-started-docker.html
 https://www.elastic.co/guide/en/elasticsearch/reference/current/configuring-tls-docker.html
 
+### DISCLAIMER
+
+Instructions and scripts are designed to be used with the version listed in the .env file.
+
 ### Instructions
 
 1. Create TLS certificates for encrypted communications between nodes
@@ -44,8 +48,8 @@ https://www.elastic.co/guide/en/elasticsearch/reference/current/configuring-tls-
 
 5. Run the _elasticsearch-generate-passwords_ tool on es01 to generate passwords for all built-in users and kibana_system. Make note of these passwords.
    ```
-   docker exec es01 /bin/bash -c "ln -s /usr/share/elasticsearch/config/certificates/ca/ca.crt /etc/pki/ca-trust/source/anchors/es-cluster-ca.crt"
-   docker exec es01 /bin/bash -c "update-ca-trust"
+   docker exec es01 /bin/bash -c "cp /usr/share/elasticsearch/config/certificates/ca/ca.crt /usr/local/share/ca-certificates"
+   docker exec es01 /bin/bash -c "update-ca-certificates"
    docker exec es01 /bin/bash -c "bin/elasticsearch-setup-passwords auto --batch --url https://es01:9200"
    ```
 6. Edit .env file : Replace **ELASTIC_PASSWORD** with the randomly generated password for _kibana_system_. You'll also want to replace **KIBANA_ENCRYPTION_KEY** with a randomly generated (use your own), 32 character alphanumeric value. This is used for encrypting API keys for Elastic Agent fleets.
